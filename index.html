@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOODER | A TO Z ONLINE STORE</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f7f8fb;color:#172033}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#ff3d3d,#ff7a00);color:#fff;padding:14px 5%;box-shadow:0 3px 15px #0002}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.logo{font-size:30px;font-weight:900;letter-spacing:1px}
+.logo span{color:#ffe600}.tag{font-size:12px;opacity:.9}.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
+.cartbtn{background:#fff;color:#e53935}.hero{padding:45px 5%;background:linear-gradient(120deg,#fff1e8,#fff);display:grid;grid-template-columns:1.5fr 1fr;gap:25px;align-items:center}
+.hero h1{font-size:48px;margin:0 0 12px}.hero p{font-size:18px;line-height:1.6}.hero-card{background:#fff;border-radius:25px;padding:25px;box-shadow:0 10px 35px #0001;text-align:center}
+.hero-emoji{font-size:90px}.service{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.pill{background:#fff;border:1px solid #ffd1b5;padding:9px 13px;border-radius:30px;font-weight:700}
+.container{width:90%;max-width:1250px;margin:30px auto}.topbar{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:center}
+.search{padding:13px 16px;border:1px solid #ddd;border-radius:12px;width:min(450px,100%)}.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.filter{background:#fff;border:1px solid #ddd;padding:9px 13px;border-radius:20px;cursor:pointer}.filter.active{background:#ff4b2b;color:#fff;border-color:#ff4b2b}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 7px 25px #00000010;transition:.2s}.card:hover{transform:translateY(-4px)}
+.pic{height:180px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.info{padding:15px}.cat{font-size:12px;color:#e85b2a;font-weight:700}.name{font-weight:800;margin:7px 0;min-height:38px;font-size:16px}.eng{font-size:11px;color:#777;font-weight:600;margin-top:-4px}.price{font-size:20px;font-weight:900}.add{background:#ff4b2b;color:white;width:100%;margin-top:10px}
+section.box{background:#fff;border-radius:22px;padding:25px;margin:35px 0;box-shadow:0 7px 25px #0000000d}.areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.area{padding:16px;border-radius:15px;background:#fff4ed;text-align:center;font-weight:800}
+.rider{background:linear-gradient(135deg,#172033,#293a5a);color:#fff}.rider input,.rider textarea{width:100%;padding:13px;border:0;border-radius:10px;margin:7px 0}.rider .btn{background:#ffb000;color:#172033;width:100%}
+footer{background:#111827;color:#fff;padding:35px 5%;margin-top:45px}.footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:50;padding:20px}.modalbox{background:#fff;max-width:600px;margin:30px auto;border-radius:22px;padding:25px;max-height:90vh;overflow:auto}
+.cartrow{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #eee}.qty button{padding:4px 9px}.close{float:right;background:#eee}
+@media(max-width:750px){.hero{grid-template-columns:1fr}.hero h1{font-size:38px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div><div class="logo">FOOD<span>ER</span></div><div class="tag">Food • Grocery • Fast Delivery</div></div>
+<button class="btn cartbtn" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button></div></header>
+
+<div class="hero"><div><h1>Delicious Food & Daily Grocery, Delivered.</h1>
+<p>FOODER — A TO Z ONLINE STORE से Veg Fast Food और रोज़मर्रा की Grocery घर तक मंगाइए।</p>
+<div class="service"><span class="pill">🚚 Delivery ₹10 Only</span><span class="pill">🥗 100% Veg Menu</span><span class="pill">🛒 Grocery</span></div></div>
+<div class="hero-card"><div class="hero-emoji">🍔🍕🛒</div><h2>FOODER</h2><p>Fast • Fresh • Local</p></div></div>
+
+<div class="container">
+<div class="topbar"><h2>Our Menu & Grocery</h2><input id="search" class="search" placeholder="Search food or grocery..." oninput="render()"></div>
+<div id="filters" class="filters"></div><div id="products" class="grid"></div>
+
+<section class="box"><h2>📍 Available Service Areas</h2><p>FOODER delivery service currently available in:</p>
+<div class="areas"><div class="area">BEHAMA</div><div class="area">MAHAMUDABAD</div><div class="area">SIDHAULI</div><div class="area">KUWARGAADI</div></div>
+<p><b>Delivery Charge: ₹10 only</b></p></section>
+
+<section class="box rider"><h2>🏍️ Rider Hiring</h2><p>FOODER के साथ delivery rider बनकर जुड़ें। अपना नाम और mobile number भेजें। हमारी team आपसे संपर्क करेगी।</p>
+<form onsubmit="applyRider(event)"><input id="rname" required placeholder="पूरा नाम"><input id="rphone" required placeholder="Mobile Number"><input id="rplace" placeholder="आपका क्षेत्र / स्थान"><textarea id="rmsg" placeholder="अन्य जानकारी"></textarea><button class="btn" type="submit">Rider Application भेजें</button></form></section>
+</div>
+
+<footer><div class="footgrid"><div><h2>FOODER</h2><p>A TO Z ONLINE STORE</p><p>Food & Grocery Delivery</p></div>
+<div><h3>Customer Support</h3><p>📞 9236504462</p><p>📞 9278009370</p></div>
+<div><h3>Office Address</h3><p>SANDAUR POST RAMPUR KALAN 261206</p><p>GST: 09BOJPH1904L1ZT</p></div></div><p style="margin-top:25px">© 2026 FOODER • A TO Z ONLINE STORE</p></footer>
+
+<div id="cartModal" class="modal" onclick="if(event.target===this)closeCart()"><div class="modalbox"><button class="btn close" onclick="closeCart()">✕</button><h2>🛒 Your Cart</h2><div id="cart"></div><hr><h3>Total: ₹<span id="subtotal">0</span></h3><p>🚚 Delivery Charge: ₹10</p><h2>Grand Total: ₹<span id="grand">10</span></h2>
+<button class="btn" style="background:#25D366;color:white;width:100%" onclick="orderWhatsApp()">Order on WhatsApp</button></div></div>
+
+<script>
+const products=[{cat:"Burger",name:"Veg Burger",price:49},
+{cat:"Burger",name:"Cheese Burger",price:69},
+{cat:"Burger",name:"Aloo Tikki Burger",price:49},
+{cat:"Burger",name:"Paneer Burger",price:89},
+{cat:"Burger",name:"Double Cheese Burger",price:99},
+{cat:"Burger",name:"Corn Burger",price:69},
+{cat:"Pizza",name:"Margherita Pizza",price:99},
+{cat:"Pizza",name:"Veggie Pizza",price:129},
+{cat:"Pizza",name:"Cheese Corn Pizza",price:139},
+{cat:"Pizza",name:"Paneer Pizza",price:149},
+{cat:"Pizza",name:"Farmhouse Pizza",price:169},
+{cat:"Pizza",name:"Double Cheese Pizza",price:179},
+{cat:"Snacks",name:"French Fries",price:59},
+{cat:"Snacks",name:"Peri Peri Fries",price:69},
+{cat:"Snacks",name:"Masala Fries",price:69},
+{cat:"Snacks",name:"Cheese Fries",price:89},
+{cat:"Snacks",name:"Potato Wedges",price:79},
+{cat:"Snacks",name:"Garlic Bread",price:79},
+{cat:"Snacks",name:"Cheese Garlic Bread",price:99},
+{cat:"Rolls & Wraps",name:"Veg Roll",price:59},
+{cat:"Rolls & Wraps",name:"Paneer Roll",price:89},
+{cat:"Rolls & Wraps",name:"Cheese Roll",price:79},
+{cat:"Rolls & Wraps",name:"Veg Wrap",price:69},
+{cat:"Rolls & Wraps",name:"Paneer Wrap",price:99},
+{cat:"Rolls & Wraps",name:"Spring Roll",price:69},
+{cat:"Chinese",name:"Veg Noodles",price:79},
+{cat:"Chinese",name:"Hakka Noodles",price:89},
+{cat:"Chinese",name:"Veg Fried Rice",price:89},
+{cat:"Chinese",name:"Chilli Potato",price:89},
+{cat:"Chinese",name:"Veg Manchurian",price:99},
+{cat:"Chinese",name:"Chilli Paneer",price:119},
+{cat:"Chinese",name:"Veg Momos",price:79},
+{cat:"Chinese",name:"Fried Momos",price:89},
+{cat:"Sandwich",name:"Veg Sandwich",price:59},
+{cat:"Sandwich",name:"Cheese Sandwich",price:79},
+{cat:"Sandwich",name:"Grilled Sandwich",price:89},
+{cat:"Sandwich",name:"Paneer Sandwich",price:99},
+{cat:"Sandwich",name:"Corn Sandwich",price:89},
+{cat:"Sandwich",name:"Club Veg Sandwich",price:119},
+{cat:"Drinks",name:"Cold Drink",price:40},
+{cat:"Drinks",name:"Fresh Lime",price:49},
+{cat:"Drinks",name:"Cold Coffee",price:79},
+{cat:"Drinks",name:"Mango Shake",price:89},
+{cat:"Drinks",name:"Chocolate Shake",price:99},
+{cat:"Drinks",name:"Oreo Shake",price:109},
+{cat:"Special Combos",name:"Veg Burger + Fries",price:99},
+{cat:"Special Combos",name:"Cheese Burger + Fries + Cold Drink",price:149},
+{cat:"Special Combos",name:"Paneer Burger + Fries + Cold Drink",price:179},
+{cat:"Special Combos",name:"Veg Pizza + Cold Drink",price:139},
+{cat:"Special Combos",name:"Veg Momos + Cold Drink",price:109},
+{cat:"Special Combos",name:"Veg Noodles + Manchurian",price:149},
+{cat:"Special Combos",name:"Paneer Wrap + Fries + Cold Drink",price:169},
+{cat:"Dairy & Breakfast",name:"Milk 500ml",price:30},
+{cat:"Dairy & Breakfast",name:"Curd 400g",price:35},
+{cat:"Dairy & Breakfast",name:"Butter 100g",price:60},
+{cat:"Dairy & Breakfast",name:"Paneer 200g",price:90},
+{cat:"Dairy & Breakfast",name:"Bread",price:40},
+{cat:"Dairy & Breakfast",name:"Corn Flakes 250g",price:110},
+{cat:"Dairy & Breakfast",name:"Oats 500g",price:90},
+{cat:"Atta, Rice & Dal",name:"Wheat Atta 5kg",price:250},
+{cat:"Atta, Rice & Dal",name:"Basmati Rice 5kg",price:450},
+{cat:"Atta, Rice & Dal",name:"Regular Rice 5kg",price:300},
+{cat:"Atta, Rice & Dal",name:"Toor Dal 1kg",price:160},
+{cat:"Atta, Rice & Dal",name:"Moong Dal 1kg",price:140},
+{cat:"Atta, Rice & Dal",name:"Masoor Dal 1kg",price:110},
+{cat:"Atta, Rice & Dal",name:"Chana Dal 1kg",price:100},
+{cat:"Atta, Rice & Dal",name:"Rajma 1kg",price:150},
+{cat:"Atta, Rice & Dal",name:"Kabuli Chana 1kg",price:130},
+{cat:"Oil & Masala",name:"Mustard Oil 1L",price:150},
+{cat:"Oil & Masala",name:"Refined Oil 1L",price:140},
+{cat:"Oil & Masala",name:"Turmeric 100g",price:30},
+{cat:"Oil & Masala",name:"Red Chilli 100g",price:35},
+{cat:"Oil & Masala",name:"Coriander Powder 100g",price:25},
+{cat:"Oil & Masala",name:"Garam Masala 100g",price:60},
+{cat:"Oil & Masala",name:"Cumin 100g",price:50},
+{cat:"Oil & Masala",name:"Salt 1kg",price:25},
+{cat:"Biscuits & Snacks",name:"Parle-G",price:10},
+{cat:"Biscuits & Snacks",name:"Marie Biscuit",price:20},
+{cat:"Biscuits & Snacks",name:"Cream Biscuit",price:30},
+{cat:"Biscuits & Snacks",name:"Namkeen 200g",price:50},
+{cat:"Biscuits & Snacks",name:"Chips",price:20},
+{cat:"Biscuits & Snacks",name:"Popcorn",price:30},
+{cat:"Biscuits & Snacks",name:"Bhujia 200g",price:50},
+{cat:"Beverages",name:"Tea 250g",price:120},
+{cat:"Beverages",name:"Coffee 100g",price:120},
+{cat:"Beverages",name:"Green Tea",price:100},
+{cat:"Beverages",name:"Juice 1L",price:120},
+{cat:"Beverages",name:"Cold Drink 750ml",price:50},
+{cat:"Beverages",name:"Packaged Water 1L",price:20},
+{cat:"Personal Care",name:"Bath Soap",price:35},
+{cat:"Personal Care",name:"Shampoo 180ml",price:120},
+{cat:"Personal Care",name:"Toothpaste",price:70},
+{cat:"Personal Care",name:"Toothbrush",price:30},
+{cat:"Personal Care",name:"Hair Oil",price:80},
+{cat:"Personal Care",name:"Face Wash",price:120},
+{cat:"Home & Cleaning",name:"Dishwash Bar",price:20},
+{cat:"Home & Cleaning",name:"Dishwash Liquid",price:90},
+{cat:"Home & Cleaning",name:"Detergent Powder 1kg",price:100},
+{cat:"Home & Cleaning",name:"Floor Cleaner 1L",price:120},
+{cat:"Home & Cleaning",name:"Toilet Cleaner",price:100},
+{cat:"Home & Cleaning",name:"Scrub Pad",price:20},
+{cat:"Home & Cleaning",name:"Garbage Bags",price:50},
+{cat:"Fresh Vegetables",name:"Potato 1kg",price:30},
+{cat:"Fresh Vegetables",name:"Onion 1kg",price:35},
+{cat:"Fresh Vegetables",name:"Tomato 1kg",price:40},
+{cat:"Fresh Vegetables",name:"Green Chilli 100g",price:15},
+{cat:"Fresh Vegetables",name:"Ginger 250g",price:30},
+{cat:"Fresh Vegetables",name:"Garlic 250g",price:40},
+{cat:"Fresh Vegetables",name:"Cauliflower 1pc",price:40},
+{cat:"Fresh Vegetables",name:"Cabbage 1pc",price:35},
+{cat:"Fresh Vegetables",name:"Carrot 1kg",price:50},
+{cat:"Fresh Vegetables",name:"Capsicum 500g",price:50}];
+let active="All", cart=[];
+const cats=["All",...new Set(products.map(x=>x.cat))];
+document.getElementById("filters").innerHTML=cats.map(c=>`<button class="filter ${c==="All"?"active":""}" onclick="active='${c.replace(/'/g,"\\'")}';renderFilters();render()">${c}</button>`).join("");
+function renderFilters(){document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b.textContent===active))}
+const hindiNames={
+"Veg Burger":"वेज बर्गर","Cheese Burger":"चीज़ बर्गर","Aloo Tikki Burger":"आलू टिक्की बर्गर","Paneer Burger":"पनीर बर्गर","Double Cheese Burger":"डबल चीज़ बर्गर","Corn Burger":"कॉर्न बर्गर","Margherita Pizza":"मार्घेरिटा पिज़्ज़ा","Veggie Pizza":"वेजिटेबल पिज़्ज़ा","Cheese Corn Pizza":"चीज़ कॉर्न पिज़्ज़ा","Paneer Pizza":"पनीर पिज़्ज़ा","Farmhouse Pizza":"फार्महाउस पिज़्ज़ा","Double Cheese Pizza":"डबल चीज़ पिज़्ज़ा","French Fries":"फ्रेंच फ्राइज़","Peri Peri Fries":"पेरी पेरी फ्राइज़","Masala Fries":"मसाला फ्राइज़","Cheese Fries":"चीज़ फ्राइज़","Potato Wedges":"पोटैटो वेजेज","Garlic Bread":"गार्लिक ब्रेड","Cheese Garlic Bread":"चीज़ गार्लिक ब्रेड","Veg Roll":"वेज रोल","Paneer Roll":"पनीर रोल","Cheese Roll":"चीज़ रोल","Veg Wrap":"वेज रैप","Paneer Wrap":"पनीर रैप","Spring Roll":"स्प्रिंग रोल","Veg Noodles":"वेज नूडल्स","Hakka Noodles":"हक्का नूडल्स","Veg Fried Rice":"वेज फ्राइड राइस","Chilli Potato":"चिली पोटैटो","Veg Manchurian":"वेज मंचूरियन","Chilli Paneer":"चिली पनीर","Veg Momos":"वेज मोमोज","Fried Momos":"फ्राइड मोमोज","Veg Sandwich":"वेज सैंडविच","Cheese Sandwich":"चीज़ सैंडविच","Grilled Sandwich":"ग्रिल्ड सैंडविच","Paneer Sandwich":"पनीर सैंडविच","Corn Sandwich":"कॉर्न सैंडविच","Club Veg Sandwich":"क्लब वेज सैंडविच","Cold Drink":"कोल्ड ड्रिंक","Fresh Lime":"फ्रेश लाइम","Cold Coffee":"कोल्ड कॉफी","Mango Shake":"मैंगो शेक","Chocolate Shake":"चॉकलेट शेक","Oreo Shake":"ओरियो शेक","Veg Burger + Fries":"वेज बर्गर + फ्राइज़","Cheese Burger + Fries + Cold Drink":"चीज़ बर्गर + फ्राइज़ + कोल्ड ड्रिंक","Paneer Burger + Fries + Cold Drink":"पनीर बर्गर + फ्राइज़ + कोल्ड ड्रिंक","Veg Pizza + Cold Drink":"वेज पिज़्ज़ा + कोल्ड ड्रिंक","Veg Momos + Cold Drink":"वेज मोमोज + कोल्ड ड्रिंक","Veg Noodles + Manchurian":"वेज नूडल्स + मंचूरियन","Paneer Wrap + Fries + Cold Drink":"पनीर रैप + फ्राइज़ + कोल्ड ड्रिंक","Milk 500ml":"दूध 500ml","Curd 400g":"दही 400g","Butter 100g":"मक्खन 100g","Paneer 200g":"पनीर 200g","Bread":"ब्रेड","Corn Flakes 250g":"कॉर्न फ्लेक्स 250g","Oats 500g":"ओट्स 500g","Wheat Atta 5kg":"गेहूं आटा 5kg","Basmati Rice 5kg":"बासमती चावल 5kg","Regular Rice 5kg":"साधारण चावल 5kg","Toor Dal 1kg":"तूर दाल 1kg","Moong Dal 1kg":"मूंग दाल 1kg","Masoor Dal 1kg":"मसूर दाल 1kg","Chana Dal 1kg":"चना दाल 1kg","Rajma 1kg":"राजमा 1kg","Kabuli Chana 1kg":"काबुली चना 1kg","Mustard Oil 1L":"सरसों तेल 1L","Refined Oil 1L":"रिफाइंड तेल 1L","Turmeric 100g":"हल्दी 100g","Red Chilli 100g":"लाल मिर्च 100g","Coriander Powder 100g":"धनिया पाउडर 100g","Garam Masala 100g":"गरम मसाला 100g","Cumin 100g":"जीरा 100g","Salt 1kg":"नमक 1kg","Parle-G":"पार्ले-जी","Marie Biscuit":"मैरी बिस्किट","Cream Biscuit":"क्रीम बिस्किट","Namkeen 200g":"नमकीन 200g","Chips":"चिप्स","Popcorn":"पॉपकॉर्न","Bhujia 200g":"भुजिया 200g","Tea 250g":"चाय 250g","Coffee 100g":"कॉफी 100g","Green Tea":"ग्रीन टी","Juice 1L":"जूस 1L","Cold Drink 750ml":"कोल्ड ड्रिंक 750ml","Packaged Water 1L":"पैक्ड पानी 1L","Bath Soap":"नहाने का साबुन","Shampoo 180ml":"शैम्पू 180ml","Toothpaste":"टूथपेस्ट","Toothbrush":"टूथब्रश","Hair Oil":"बालों का तेल","Face Wash":"फेस वॉश","Dishwash Bar":"बर्तन धोने की टिकिया","Dishwash Liquid":"बर्तन धोने का लिक्विड","Detergent Powder 1kg":"डिटर्जेंट पाउडर 1kg","Floor Cleaner 1L":"फ्लोर क्लीनर 1L","Toilet Cleaner":"टॉयलेट क्लीनर","Scrub Pad":"स्क्रब पैड","Garbage Bags":"कूड़ा बैग","Potato 1kg":"आलू 1kg","Onion 1kg":"प्याज़ 1kg","Tomato 1kg":"टमाटर 1kg","Green Chilli 100g":"हरी मिर्च 100g","Ginger 250g":"अदरक 250g","Garlic 250g":"लहसुन 250g","Cauliflower 1pc":"फूलगोभी 1 नग","Cabbage 1pc":"पत्तागोभी 1 नग","Carrot 1kg":"गाजर 1kg","Capsicum 500g":"शिमला मिर्च 500g"};
+
+const photoQueries={"Burger":"veg burger","Pizza":"vegetable pizza","Snacks":"french fries snack","Rolls & Wraps":"veg roll wrap","Chinese":"veg noodles chinese food","Sandwich":"veg sandwich","Drinks":"cold drink beverage","Special Combos":"veg fast food combo","Dairy & Breakfast":"milk dairy breakfast","Atta, Rice & Dal":"rice lentils grocery","Oil & Masala":"cooking oil spices","Biscuits & Snacks":"biscuits snacks","Beverages":"tea coffee juice","Personal Care":"bath soap shampoo toothpaste","Home & Cleaning":"dishwash detergent cleaning","Fresh Vegetables":"fresh vegetables grocery"};
+
+function photoUrl(x){const q=encodeURIComponent((x.name+" "+(photoQueries[x.cat]||"product")).toLowerCase());return `https://loremflickr.com/600/450/${q}?lock=${products.indexOf(x)+101}`;}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=products.filter(x=>(active==="All"||x.cat===active)&&((x.name+" "+(hindiNames[x.name]||"")).toLowerCase().includes(q)));
+ document.getElementById("products").innerHTML=list.map(x=>`<div class="card"><div class="pic"><img src="${photoUrl(x)}" alt="${hindiNames[x.name]||x.name}" loading="lazy" onerror="this.src='https://placehold.co/600x450?text=${encodeURIComponent(hindiNames[x.name]||x.name)}'"></div><div class="info"><div class="cat">${x.cat}</div><div class="name">${hindiNames[x.name]||x.name}</div><div class="eng">${x.name}</div><div class="price">₹${x.price}</div><button class="btn add" onclick="add('${x.name.replace(/'/g,"\\'")}',${x.price})">ADD TO CART</button></div></div>`).join("");
+}
+function add(name,price){let x=cart.find(a=>a.name===name);x?x.qty++:cart.push({name,price,qty:1});update()}
+function update(){document.getElementById("count").textContent=cart.reduce((s,x)=>s+x.qty,0)}
+function openCart(){renderCart();document.getElementById("cartModal").style.display="block"}
+function closeCart(){document.getElementById("cartModal").style.display="none"}
+function renderCart(){document.getElementById("cart").innerHTML=cart.length?cart.map((x,i)=>`<div class="cartrow"><span>${x.name}<br>₹${x.price} × ${x.qty}</span><span class="qty"><button onclick="change(${i},-1)">−</button> <button onclick="change(${i},1)">+</button></span></div>`).join(""):"<p>Your cart is empty.</p>";let s=cart.reduce((a,x)=>a+x.price*x.qty,0);document.getElementById("subtotal").textContent=s;document.getElementById("grand").textContent=s+10}
+function change(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);update();renderCart()}
+function orderWhatsApp(){if(!cart.length)return alert("Please add items to cart.");let lines=cart.map(x=>`${x.name} x ${x.qty} = ₹${x.price*x.qty}`).join("%0A");let s=cart.reduce((a,x)=>a+x.price*x.qty,0);let msg=`FOODER Order%0A%0A${lines}%0A%0ASubtotal: ₹${s}%0ADelivery: ₹10%0AGrand Total: ₹${s+10}`;window.open("https://wa.me/919236504462?text="+msg,"_blank")}
+function applyRider(e){e.preventDefault();let msg=`FOODER Rider Application%0AName: ${rname.value}%0AMobile: ${rphone.value}%0AArea: ${rplace.value}%0AMessage: ${rmsg.value}`;window.open("https://wa.me/919236504462?text="+msg,"_blank")}
+render();
+</script>
+</body></html>
